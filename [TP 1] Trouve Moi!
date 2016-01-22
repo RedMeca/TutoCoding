@@ -1,0 +1,84 @@
+/*Interdit à la revente!*/
+
+package tp1;
+
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.Scanner;  
+
+public class Minijeux {
+	
+	public static long time = 0;
+	
+	public static long timeBefore = 0;
+	public static long timeAfter = 0;
+
+	public static void main(String[] args) {
+		
+		Random rand = new Random();
+		Scanner scann = new Scanner(System.in);
+		
+		boolean isInBounds = true;
+		
+		int bound = 10;
+		
+		System.out.println("Choisissez votre intervalle (max: 10 000 000 000) :");
+		bound = scann.nextInt();
+		
+		int finalNumber = Math.abs(rand.nextInt(bound));
+		int answer = -1;
+		int tries = 0;
+		int repeated = 0;
+	
+		ArrayList<Integer> mem = new ArrayList<>();
+		
+		while(answer != finalNumber){
+			
+			isInBounds = true;
+			System.out.println("Entrez un nombre entre 0 et "+bound);
+			
+			answer = scann.nextInt();
+			
+			if(tries < 1) launchChrono();
+			
+			tries++;
+
+			if(answer > bound){
+				System.out.println("Non, le maximum possible c'est " + bound);
+				isInBounds = false;
+			} else if(answer < 0){
+				System.out.println("Non, jamais en dessous de 0");
+				isInBounds = false;
+			}
+			
+			if(answer > finalNumber && isInBounds){
+				System.out.println("Faux, le nombre que tu cherches est plus petit que celui ci.");
+			} else if(answer < finalNumber && isInBounds){
+				System.out.println("Faux, le nombre que tu cherches est plus grand que celui ci.");
+			} 		
+			
+			for(int memor : mem){
+				if(memor == answer){
+					System.out.println("Stupide tu l'as déjà essayé!");
+					repeated++;
+				}
+			}
+			
+			mem.add(answer);
+		}
+			
+		stopChrono();
+				
+		System.out.println( "Bravo ! Tu as réussi en " + tries + " essais, " + time + "s.\n Tu as remis " + repeated + " fois le même nombre.\n Ton intervalle �tait de " + bound);	
+		System.out.println((int) ((bound - time * tries)) - (5*repeated*(repeated+1)) + " de score");
+	}
+	
+	public static void launchChrono(){
+		timeBefore = System.currentTimeMillis();
+	}
+	
+	public static void stopChrono(){
+		timeAfter = System.currentTimeMillis();
+		time = (timeAfter - timeBefore) / 1000;
+	}
+}
